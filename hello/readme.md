@@ -2,7 +2,7 @@
   
 完成了make git gpp环境的配置  
 请在目录内运行  
-```bash make ```  
+``` make                   ```  
   
 然后应该会有hello.exe  
 ./后会输出该输出的字符串  
