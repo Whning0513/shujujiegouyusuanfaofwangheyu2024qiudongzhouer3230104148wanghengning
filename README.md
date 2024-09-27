@@ -3,4 +3,6 @@
 #
 ##
 ### 秋一周：hello  
-### 秋三周：chicken      
+配置cpp和IDE环境  
+### 秋三周：chicken 
+类的操作和代码规范  
