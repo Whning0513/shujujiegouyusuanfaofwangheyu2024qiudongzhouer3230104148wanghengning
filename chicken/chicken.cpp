@@ -64,12 +64,16 @@ class Chicken
             age = _age;
         }
 
-        // 设置名字，支持深度拷贝
-        void setName(const char *_name)
-        {
-            delete[] name;  // 释放旧的内存
-            copyName(_name);  // 深度拷贝新的name
-        }
+        void setName(const char *_name) {
+            if (_name) {
+                char *oldName = name;  // 备份
+                copyName(_name);       // 拷贝新的名字
+                delete[] oldName;      
+            } else {
+                delete[] name;         // 如果新名字为空
+                name = nullptr;        
+            }
+        ｝
 
         // 获取名字，返回 const char* 防止修改
         const char* getName() const
