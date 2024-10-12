@@ -42,4 +42,8 @@ int main() {
     c2.printList();
 
     return 0;
+
+
+    //这行我测试用的
+    std::cin.get();
 }
