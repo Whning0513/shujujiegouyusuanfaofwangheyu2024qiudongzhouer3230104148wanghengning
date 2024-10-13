@@ -105,52 +105,40 @@ void SingleLinkedList<T>::insert(T _val)
 template <typename T>
 void SingleLinkedList<T>::remove()
 {
-    if (isEmpty()) // 空链表
+    if (isEmpty()) // 如果链表为空，直接返回
     {
-        std::cerr << "ruodangqianweizhiweikongzebujinxingcaozuo" << std::endl;
+        std::cerr << "konglianbiao" << std::endl;
         return;
     }
 
-    if (currentPos == nullptr) // currentPos 不应为空
+    if (currentPos == nullptr) // 如果当前位置为空，不进行操作
     {
-        std::cerr << "zhegeptrshiinvalid" << std::endl;
-        exit(EXIT_FAILURE); // 前面的报错都退出了，所以我猜这个也要退出
-    }
-
-    if (currentPos == head) // 如果 currentPos 是 head，处理删除头节点的情况
-    {
-        Node* nodeToDelete = head;  // head->A->B  head->B n2delte->A
-        head = head->next;
-        delete nodeToDelete;
-        --size;
-
-        if (size == 0) // 删除后链表为空
-        {
-            head = nullptr;
-            currentPos = nullptr;
-        }
-        else
-        {
-            currentPos = head; // 将 currentPos 移动到新的 head
-        }
+        std::cerr << "kongzhizhen" << std::endl;
         return;
     }
 
-    // 普通情况下删除 currentPos 之后的节点
-    if (currentPos->next == nullptr) // 如果 currentPos 是最后一个节点
+    if (size == 1) // 如果链表只有一个元素
     {
-        std::cerr << "zhegeshizuihouyige,bucaozuo" << std::endl;
+        // 删除唯一的元素
+        delete head;
+        head = nullptr;
+        currentPos = nullptr;
+        size = 0;
+        return;
+    }
+
+    if (currentPos->next == nullptr) // 如果当前位置是最后一个节点，无法删除其后节点
+    {
+        std::cerr << "zhegejiedianshizuihouyigejiedian" << std::endl;
         return;
     }
 
     // 删除 currentPos 后面的节点
     Node* nodeToDelete = currentPos->next;
-    currentPos->next = nodeToDelete->next;
+    currentPos->next = nodeToDelete->next; // 让 currentPos 指向 nodeToDelete 之后的节点
     delete nodeToDelete;
     --size;
-    return;
 }
-
 
 template<typename T>
 bool SingleLinkedList<T>::find(const T &_val)
