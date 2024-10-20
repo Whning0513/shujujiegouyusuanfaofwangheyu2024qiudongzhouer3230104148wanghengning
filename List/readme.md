@@ -16,8 +16,11 @@ void print() const
 我在测试函数中反复使用了它。使用迭代器迭代。
 
 我的make没有在编译完成后删除中间产生的文件，但是能正常生成pdf。  
-
   
+给出了in use at exit: 0 bytes in 0 blocks     
+total heap usage: 115 allocs, 115 frees     
+All heap blocks were freed -- no leaks are possible    
+
 #  一共有如下函数  
 ## 公有成员函数
 1. **List()**: 默认构造函数，初始化链表。
