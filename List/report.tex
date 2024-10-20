@@ -45,15 +45,6 @@
 \section{简介}
 
 在本次测试中，我创建了一个自定义链表类，涵盖了整数、浮点数和字符类型的链表。测试过程中，我向链表中插入了多种元素，并进行了删除、访问、插入、清空和异常处理等操作，以验证链表的功能和稳定性。
-
-\section{测试程序的设计思路}
-
-链表初始化：首先，我实例化了不同类型的链表对象，包括 List<int>、List<float> 和 List<char>。对每个链表对象进行了初始化并确认其初始状态为“空”。
-
-元素插入：对每个链表使用 pushback 和 pushfront 方法插入元素。例如，在字符链表中，我按顺序插入了字母“wanghengning”，以确保插入操作的顺序和准确性。
-
-访问和修改操作：
-
 通过调用 front() 和 back() 方法，检查链表的首尾元素，并验证其正确性。
 使用迭代器遍历链表中的元素，确保可以按预期访问所有元素。
 删除操作：对链表进行 popfront 和 popback 操作，以测试元素的删除功能。尤其是对字符链表的操作，删除后验证链表大小和元素状态。
@@ -68,23 +59,127 @@
 
 嵌套链表：创建一个外层链表 List<List<int>>，并向其中插入内层链表，测试嵌套结构的操作，包括插入、访问和删除等。\
 
-\section{测试的结果}
+\section{测试程序介绍}
 
-测试结果一切正常。
+下面将分段介绍我的测试程序。
 
-我用 valgrind 进行测试，发现没有发生内存泄露。
+\begin{lstlisting}[language=C++]
+void testList() {
+    List<int> intList;
+    ...
+}
+\end{lstlisting}
+这段代码测试了不同类型链表的方法，包括 int、float 和 char 类型。
 
-\section{（可选）bug报告}
+\subsection{测试 int 类型列表}
 
-我发现了一个 bug，触发条件如下：
+首先，测试 int 类型列表。
+
+\begin{lstlisting}[language=C++]
+List<int> intList;
+std::cout << "Initial size (should be 0): " << intList.size() << std::endl;
+std::cout << "Is empty (should be true): " << intList.empty() << std::endl;
+\end{lstlisting}
+这段代码测试了空列表的初始状态。
+
+\begin{lstlisting}[language=C++]
+intList.push_back(1);
+intList.push_back(2);
+intList.push_front(3);
+std::cout << "After adding elements (size should be 3): " << intList.size() << std::endl;
+intList.print();
+\end{lstlisting}
+这段代码测试了添加元素后列表的大小和内容。
+
+\begin{lstlisting}[language=C++]
+intList.pop_front();
+intList.pop_back();
+std::cout << "After pop_front (size should be 5): " << intList.size() << std::endl;
+intList.print();
+\end{lstlisting}
+这段代码测试了前后弹出操作。
+
+\begin{lstlisting}[language=C++]
+intList.clear();
+std::cout << "After clear (size should be 0): " << intList.size() << std::endl;
+\end{lstlisting}
+这段代码测试了清空列表的功能。
+
+\subsection{测试 float 类型列表}
+
+接下来，测试 float 类型列表。
+
+\begin{lstlisting}[language=C++]
+List<float> floatList = {1.1f, 2.2f, 3.3f};
+std::cout << "Float list size (should be 3): " << floatList.size() << std::endl;
+\end{lstlisting}
+这段代码测试了初始化列表构造。
+
+\begin{lstlisting}[language=C++]
+floatList.push_back(4.4f);
+floatList.push_front(0.0f);
+std::cout << "After adding float elements (size should be 5): " << floatList.size() << std::endl;
+\end{lstlisting}
+这段代码测试了对 float 列表的添加操作。
+
+\subsection{测试 char 类型列表}
+
+然后，测试 char 类型列表。
+
+\begin{lstlisting}[language=C++]
+List<char> charList;
+std::string letters = "wanghengning";
+for (char ch : letters) {
+    charList.push_back(ch);
+}
+\end{lstlisting}
+这段代码测试了向字符列表添加元素。
+
+\subsection{测试嵌套链表}
+
+最后，测试嵌套链表。
+
+\begin{lstlisting}[language=C++]
+List<List<int>> outerList;
+List<int> innerList1;
+innerList1.push_back(1);
+outerList.push_back(innerList1);
+\end{lstlisting}
+这段代码测试了外层链表存放内层链表的功能。
+
+\section{测试结果}
+都在预期之内，全部正常输出，函数没有遗漏，功能合理得当。
+
+\section{bug报告}
+
+我发现了几个 bug，如下：
 
 \begin{enumerate}
-    \item 首先……
-    \item 然后……
-    \item 此时发现……
+    \item 首先，您可以看到目录里有一个东西叫bug.cpp，里面有六个代码块，是我猜测会出问题的操作，但是我试过了，没出大问题。
+    \item 然后，在运行bug之后输入6(回车)，会出现一个随机数，虽然系统没有崩溃但是这个随机数是不对的。说明访问到了不该访问的东西。可能对某些文件安全有威胁。
 \end{enumerate}
 
-据我分析，它出现的原因是：
+据我分析，它出现的原因是：先获取一个位置，然后释放了这个位置，再次访问这个位置。解决方案是：在释放这个位置之后，将这个位置置为NULL，或者在检测的时候先确定是否是空指针。进一步的，其实可以注意到list.h中很多地方没有进行空指针检测。相比之下上周的那个搞得比较好。
+
+\begin{enumerate}
+    \item 另外一个bug是erase的鲁棒性不够强，您可以在bug.cpp里使用7查看  
+    \item 试图在一个链表上调用erase(i,j)，其中i，j超出了erase的范围，如j=++mylist.end(),这会导致程序崩溃，相对来说可能跳过操作，或者像python一样尽可能从头删到尾更有鲁棒性
+\end{enumerate}
+
+据我分析，它出现的原因是：from 和 to 指向的是相邻的节点（例如在一个只有 3 个节点的列表中删除 begin++ 到 end++），这会导致访问越界或对已释放内存的访问。可以考虑在 erase 方法中传递 to 的地址，以确保在删除节点后不会尝试访问无效的迭代器。
+
+\begin{enumerate}
+    \item 第三个bug和第一个bug有点像。您可以在bug.cpp里使用8查看
+    \item 先创建list，填充，clear，然后print，会显示一段乱码。猜测是读取到了不该读的内存
+\end{enumerate}
+
+据我分析，它出现的原因是：print 方法未检查链表是否为空，直接访问了已释放的节点。解决方案是：在 print 方法中添加空指针检查，确保在链表为空时不进行打印操作。这样可以避免访问无效内存并提高代码的鲁棒性。
+
+\begin{enumerate}
+    \item 还有一点，试图创建List<List<int>>，也就是"链表链表"的时候，操作极其麻烦，访问成员链表操作复杂且复用性差。  
+    \item 而且这个嵌套的东西，直觉上就感觉有很多bug……在今后的学习中希望能得到更好的解决方案，也恳请助教和老师多多提意见。  
+    \item 而且tex会把两个大于号编译成右书名号（如上），我问gpt和谷歌都没有什么简洁的解决方法。
+\end{enumerate}
 
 \end{document}
 

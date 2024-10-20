@@ -3,7 +3,7 @@
 
 int main() {
     int i;
-    std::cout << "请输入一个数 (1-6) 来触发不同的bug: ";
+    std::cout << "  input bug id: ";
     std::cin >> i;
 
     switch (i) {
@@ -51,6 +51,39 @@ int main() {
             myList.erase(it); // 删除第一个元素
             std::cout << "Iterator after erase: " << *it << std::endl; // 可能导致未定义行为
             break;
+        }
+        case 7: { // 删除第2到倒数第二个元素
+            List<int> myList;
+            myList.push_back(1);
+            myList.push_back(2);
+            myList.push_back(3);
+
+            auto it1 = myList.begin();
+            ++it1; // 指向第二个元素
+            auto it2 = myList.end();
+            ++it2; // 指向第四个元素（实际上并没有这个元素）
+
+            myList.erase(it1,it2);
+
+
+            for (auto it = myList.begin(); it != myList.end(); ++it) {
+            std::cout << *it << " ";
+            }
+            std::cout << std::endl;
+            break;
+        }
+        case 8:{
+            List<int> mylist;
+            mylist.push_back(1);
+            mylist.push_back(2);
+            mylist.push_back(3);
+
+            // 清空链表
+            mylist.clear();
+
+            // 尝试打印链表
+            std::cout << "neirong:";
+            mylist.print();
         }
         default:
             std::cout << "无效输入，请输入 1 到 6 之间的数字。" << std::endl;

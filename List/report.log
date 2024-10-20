@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/Debian) (preloaded format=xelatex 2024.10.19)  21 OCT 2024 00:25
+This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/Debian) (preloaded format=xelatex 2024.10.19)  21 OCT 2024 02:00
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -668,6 +668,33 @@ LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 \c@lstlisting=\count341
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2019/09/10 1.8c listings language file
+)
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2019/09/10 1.8c listings language file
+)
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2019/09/10 1.8c (Carsten Heinz)
+)
+
+Package fontspec Warning: Font "FandolFang-Regular" does not contain requested
+(fontspec)                Script "CJK".
+
+
+Package fontspec Info: Font family 'FandolFang-Regular(0)' created for font
+(fontspec)             'FandolFang-Regular' with options
+(fontspec)             [Script={CJK},Extension={.otf}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->"[FandolFang-Regular.otf]/OT:language=dflt;"
+(fontspec)             - 'small caps'  (m/sc) with NFSS spec.: 
+
+LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <10.53937> not available
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 67.
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
 Make it at least 12.64723pt.
@@ -676,14 +703,14 @@ This may cause the page layout to be inconsistent, however.
 
 [1
 
-] (./report.aux) ) 
+] [2] [3] (./report.aux) ) 
 Here is how much of TeX's memory you used:
- 11757 strings out of 479819
- 282842 string characters out of 5895845
- 564226 words of memory out of 5000000
- 28755 multiletter control sequences out of 15000+600000
- 532548 words of font info for 38 fonts, out of 8000000 for 9000
+ 11945 strings out of 479819
+ 283605 string characters out of 5895845
+ 759069 words of memory out of 5000000
+ 28923 multiletter control sequences out of 15000+600000
+ 532612 words of font info for 46 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 56i,10n,72p,810b,259s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 56i,11n,72p,810b,1634s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on report.pdf (1 page).
+Output written on report.pdf (3 pages).
