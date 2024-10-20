@@ -1,7 +1,8 @@
-
+# 第四次作业：链表
 这次的作业就是上课做的那个双向链表。  
 为了区分以及防止主测试程序崩溃，我另外建立了一个bug.cpp  
-根据学在浙大的通告，我猜测不希望我们对List.h删改过多，只需添加内容。所以我没有特别修改空指针等操作，也没有修改原有的内容，但是对于部分内容我在bug.cpp以及report的末尾提及了.我除了完成--，另外搞了一个print函数，用以输出链表。 这个print只能输出一个数据，但是挺方便的   
+根据我一个一个看下来，没有函数被遗漏，测试程序直接或间接调用了所有函数  
+根据学在浙大的通告，我猜测不希望我们对List.h删改过多，只需添加内容。所以我没有特别修改空指针等操作，也没有修改原有的内容，但是对于部分内容我在bug.cpp以及report的末尾提及了.我除了完成--，另外搞了一个print函数，用以输出链表。 但是这个print只能输出一个数据。   
 如下     
 void print() const  
     {  
@@ -21,7 +22,7 @@ void print() const
 total heap usage: 115 allocs, 115 frees       
 All heap blocks were freed -- no leaks are possible      
 
-一共有如下函数  
+## 一共有如下函数  
 
 公有成员函数  
 List(): 默认构造函数，初始化链表。  
@@ -71,7 +72,7 @@ const_iterator operator--(int): 后缀递减运算符，返回旧的迭代器。
 bool operator==(const const_iterator &rhs) const: 比较两个迭代器是否相等。  
 bool operator!=(const const_iterator &rhs) const: 比较两个迭代器是否不相等。    
 
-iterator  
+iterator相关  
 iterator(): 默认构造函数。  
 Object &operator()**: 返回当前节点的可修改数据。  
 const Object &operator() const: 返回当前节点的只读数据。  

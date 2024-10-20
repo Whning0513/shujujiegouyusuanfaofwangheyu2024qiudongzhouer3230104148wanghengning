@@ -2,7 +2,6 @@
 #include "List.h"
 
 void testList() {
-
     printf("-----ceshi List<int>\n");
     // 测试 int 类型列表
     List<int> intList;
@@ -23,7 +22,6 @@ void testList() {
     std::cout << "After adding elements (size should be 6): " << intList.size() << std::endl;
     intList.print();  // 打印列表  631245
 
-
     // 测试 front 和 back
     std::cout << "Front (should be 6): " << intList.front() << std::endl;
     std::cout << "Back (should be 5): " << intList.back() << std::endl;
@@ -35,6 +33,7 @@ void testList() {
     }
     std::cout << std::endl;
 
+    
     // 测试 pop_front 和 pop_back
     intList.pop_front();
     std::cout << "After pop_front (size should be 5): " << intList.size() << std::endl;
@@ -60,7 +59,7 @@ void testList() {
         std::cout << "Caught exception when accessing back of empty list." << std::endl;
     }
 
-    // 测试拷贝构造,这里在测试拷贝是否可靠
+    // 测试拷贝构造
     intList.push_back(1);
     intList.push_back(2);
     List<int> copiedIntList(intList);
@@ -86,7 +85,12 @@ void testList() {
     assignedIntList.erase(it);
     std::cout << "After erase (size should be 2): " << assignedIntList.size() << std::endl;
     assignedIntList.print();  // 打印列表
-
+    if(assignedIntList.begin()==assignedIntList.end()){
+        std::cout << "begin == end\n";
+    }
+    if(assignedIntList.begin()!=assignedIntList.end()){
+        std::cout << "begin != end\n";
+    }
     // 测试范围删除
     assignedIntList.push_back(4);
     assignedIntList.push_back(5);
@@ -94,7 +98,7 @@ void testList() {
     auto end = assignedIntList.end();
     assignedIntList.erase(start, end);
     std::cout << "After range erase (size should be 0): " << assignedIntList.size() << std::endl;
-
+    
     // 再次清理并测试链表在所有边界情况下的表现
     intList.clear();
     std::cout << "Final size of intList (should be 0): " << intList.size() << std::endl;
@@ -135,7 +139,8 @@ void testList() {
     // 清理
     floatList.clear();
     std::cout << "Final size of floatList (should be 0): " << floatList.size() << std::endl;
-     printf("----- Testing List<char> -----\n");
+
+    printf("----- Testing List<char> -----\n");
     
     // 创建字符链表并插入字母
     List<char> charList; 
@@ -149,12 +154,14 @@ void testList() {
     assignedCharList = charList;  // 自赋值
     std::cout << "Assigned list size (should be 12): " << assignedCharList.size() << std::endl;
     charList.print();
+    
     // 测试范围删除
     auto charStart = charList.begin();
     auto charEnd = charList.end();
     charList.erase(charStart, charEnd);  // 清空列表
     std::cout << "After range erase (should be 0): " << charList.size() << std::endl;
     charList.print();
+
     // 测试是否为空
     std::cout << "Is charList empty (should be true): " << charList.empty() << std::endl;
 
@@ -165,6 +172,7 @@ void testList() {
     charList.pop_back();  // 删除最后一个字母
     std::cout << "After popping back, size (should be 2): " << charList.size() << std::endl;
     charList.print();
+
     // 测试是否为空
     std::cout << "Is charList empty (should be false): " << charList.empty() << std::endl;
 
@@ -172,6 +180,7 @@ void testList() {
     charList.pop_back();  // 删除最后一个字母
     std::cout << "After pop_back, size (should be 0): " << charList.size() << std::endl;
     charList.print();
+
     // 测试异常情况
     try {
         std::cout << "Trying to access front of empty list: " << charList.front() << std::endl;
@@ -220,7 +229,7 @@ void testList() {
     innerList2.push_back(5);
     outerList.push_back(innerList2);
 
-    //嵌套地访问里面的内容
+    // 嵌套地访问里面的内容
     (*outerList.begin()).push_back(3);
     
     // 打印外层链表的大小和内容
@@ -251,10 +260,11 @@ void testList() {
 
     // 拷贝内层链表到另一个内层链表
     outerList.back() = outerList.front();
-    printf("run outerList.back() = outerList.front();\n")   ;
+    printf("run outerList.back() = outerList.front();\n");
     for (const auto& inner : outerList) {
         inner.print();  // 打印每个内层链表
     }
+
     // 测试删除外层链表的元素
     outerList.pop_back();
     std::cout << "After popping back, outer list size (should be 2): " << outerList.size() << std::endl;
