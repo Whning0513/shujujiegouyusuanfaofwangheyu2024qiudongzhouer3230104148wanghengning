@@ -6,7 +6,7 @@ template <typename T>
 class SingleLinkedList
 {
 private:
-    class Node
+    class Node//只有单链表class能调用这个子class
     {
     private:
         T data;
@@ -27,20 +27,19 @@ public:
     void setCurrentVal(const T &_val); // 设置当前位置的值
     bool isEmpty() const; // 判断链表是否为空
 
-    int getSize() const;
-    void emptyList();
-    SingleLinkedList() {};
-    ~SingleLinkedList();
-    SingleLinkedList(std::initializer_list<T> _l);
-    void printList() const;
-    SingleLinkedList(const SingleLinkedList<T> &_l);
-    SingleLinkedList<T>& operator=(const SingleLinkedList<T> &_l);
-    bool find(const T &_val);
+    int getSize() const; //获取链表大小
+    void emptyList();  //清空内存
+    SingleLinkedList() {}; // 默认构造函数
+    ~SingleLinkedList(); // 析构函数
+    SingleLinkedList(std::initializer_list<T> _l); // 初始化列表
+    void printList() const; // 输出列表
+    SingleLinkedList(const SingleLinkedList<T> &_l); // 拷贝构造函数
+    SingleLinkedList<T>& operator=(const SingleLinkedList<T> &_l); // =重载
+    bool find(const T &_val); // 查找元素
     void insert(T _val); // 在当前位置后插入一个元素
     void remove(); // 删除当前位置后面的元素
 };
 
-// 以 下 是 我 写 的 作 业 的 主 要 实 现 内 容 ，其 他 基 本 没 动 过
 
 // 1. T getCurrentVal() const 实现
 template <typename T>
@@ -90,6 +89,10 @@ void SingleLinkedList<T>::insert(T _val)
     {
         newNode->next = currentPos->next;
         currentPos->next = newNode;
+        //insert函数没有及时更新currentpos为指向新插入元素；
+        //insert函数没有及时更新currentpos为指向新插入元素；
+        //insert函数没有及时更新currentpos为指向新插入元素；
+        currentPos = newNode;
     }
     else
     {
@@ -140,6 +143,7 @@ void SingleLinkedList<T>::remove()
     --size;
 }
 
+//原有的查找，返回true修改currentPos指向找到的节点，否则返回false
 template<typename T>
 bool SingleLinkedList<T>::find(const T &_val)
 {
@@ -156,12 +160,14 @@ bool SingleLinkedList<T>::find(const T &_val)
     return false;  // 没找到目标值，返回 false
 }
 
+//getsize
 template<typename T>
 int SingleLinkedList<T>::getSize() const
 {
     return size;
 }
 
+//最重要的构造函数实现
 template <typename T>
 SingleLinkedList<T>::SingleLinkedList(std::initializer_list<T> _l)
 {
@@ -182,6 +188,7 @@ SingleLinkedList<T>::SingleLinkedList(std::initializer_list<T> _l)
     }
 }
 
+//也很重要的清空列表，保证没有剩内存
 template <typename T>
 void SingleLinkedList<T>::_emptyList()
 {
@@ -194,6 +201,7 @@ void SingleLinkedList<T>::_emptyList()
     }
 }
 
+//输出列表，tab分隔
 template <typename T>
 void SingleLinkedList<T>::printList() const
 {
@@ -206,16 +214,11 @@ void SingleLinkedList<T>::printList() const
     std::cout << std::endl;    
 }
 
+//析构函数
 template <typename T>
 SingleLinkedList<T>::~SingleLinkedList()
 {
     _emptyList();
-}
-
-template<typename T>
-SingleLinkedList<T>::SingleLinkedList(const SingleLinkedList<T> &_l)
-{
-    _copy(_l);
 }
 
 template<typename T>
@@ -257,4 +260,10 @@ void SingleLinkedList<T>::_copy(const SingleLinkedList<T> &_l)
         ++size;
         p = p->next;
     }
+}
+
+template<typename T>
+SingleLinkedList<T>::SingleLinkedList(const SingleLinkedList<T> &_l)
+{
+    _copy(_l);
 }
