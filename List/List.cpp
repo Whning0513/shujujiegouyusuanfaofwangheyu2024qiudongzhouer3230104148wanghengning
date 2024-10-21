@@ -27,13 +27,17 @@ void testList() {
     std::cout << "Back (should be 5): " << intList.back() << std::endl;
 
     // 测试迭代器
-    std::cout << "Elements in the list: ";
+    std::cout << "Elements in the list: \n";
     for (auto it = intList.begin(); it != intList.end(); ++it) {
         std::cout << *it << " ";
     }
     std::cout << std::endl;
 
-    
+    for (auto it = intList.end(); it != intList.begin(); --it) {
+        std::cout << *it << " ";
+    }
+    std::cout << std::endl;
+
     // 测试 pop_front 和 pop_back
     intList.pop_front();
     std::cout << "After pop_front (size should be 5): " << intList.size() << std::endl;
