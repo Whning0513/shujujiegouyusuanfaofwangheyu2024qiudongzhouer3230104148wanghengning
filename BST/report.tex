@@ -1,0 +1,189 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{ctex} % 支持中文
+
+\title{二叉搜索树删除函数优化测试报告}
+\author{王珩宁3230104148}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{引言}
+本报告旨在评估二叉搜索树中删除函数的性能。在对旧的删除实现进行优化后，我们进行了多项测试，以比较新旧方法在处理大量数据时的效率。
+\section{实现}
+
+本节将详细介绍优化后的删除函数的实现过程。该函数用于在二叉搜索树中删除指定值的节点，优化的核心在于避免节点内容的复制和减少不必要的递归操作。
+
+首先，删除操作的基本逻辑如下：
+\begin{itemize}
+    \item **节点查找**：根据待删除的值与当前节点值的比较，决定递归查找的方向。
+    \begin{itemize}
+        \item 如果待删除值小于当前节点值，则递归地在左子树中查找。
+        \item 如果待删除值大于当前节点值，则递归地在右子树中查找。
+    \end{itemize}
+    
+    \item **节点删除**：当找到要删除的节点时，需要根据该节点的子树情况来决定如何删除：
+    \begin{itemize}
+        \item 如果节点有两个子树，则找到右子树中的最小节点，并用该节点的值替换当前节点的值。
+        \item 如果节点只有一个子树或没有子树，则用其唯一的子树替代当前节点，或者将其直接删除。
+    \end{itemize}
+\end{itemize}
+
+为了实现这一逻辑，代码中的 `detachMin` 函数用于查找并删除右子树中的最小节点，确保在删除节点时能够正确替换。
+
+以下是该删除函数的具体代码实现：
+
+\begin{lstlisting}[language=C++]
+template <typename Comparable>
+class BinarySearchTree {
+private:
+    struct BinaryNode {
+        Comparable element;
+        BinaryNode *left;
+        BinaryNode *right;
+        BinaryNode(const Comparable &theElement, \\
+        BinaryNode *lt = nullptr, BinaryNode *rt = nullptr)
+            : element(theElement), left(lt), right(rt) {}
+    };
+
+    BinaryNode *root;
+
+    void remove(const Comparable &x, BinaryNode *&t) {
+        if (t == nullptr) return;
+
+        if (x < t->element) {
+            remove(x, t->left);
+        } else if (x > t->element) {
+            remove(x, t->right);
+        } else {
+            if (t->left != nullptr && t->right != nullptr) {
+                t->element = detachMin(t->right)->element;
+            } else {
+                BinaryNode *oldNode = t;
+                t = (t->left != nullptr) ? t->left : t->right;
+                delete oldNode;
+            }
+        }
+    }
+
+    BinaryNode *detachMin(BinaryNode *&t) {
+        if (t == nullptr) return nullptr;
+        if (t->left == nullptr) {
+            BinaryNode *minNode = t;
+            t = t->right;
+            return minNode;
+        } else {
+            return detachMin(t->left);
+        }
+    }
+
+public:
+    BinarySearchTree() : root(nullptr) {}
+
+    void remove(const Comparable &x) {
+        remove(x, root);
+    }
+
+    // 其他成员函数...
+};
+\end{lstlisting}
+
+\section{测试方法}
+我实现了一个包含插入、查找、删除和性能测试的二叉搜索树。为了评估删除操作的性能，我们分别记录了旧的 \texttt{old\_remove} 函数和优化后的 \texttt{remove} 函数的执行时间。
+
+\section{测试结果}
+在进行测试时，二叉搜索树的初始状态如下：
+
+\begin{lstlisting}[language=C++]
+Initial Tree:
+3
+5
+7
+10
+12
+15
+18
+\end{lstlisting}
+
+最小和最大元素的查找结果为：
+
+\begin{lstlisting}[language=C++]
+Minimum element: 3
+Maximum element: 18
+Contains 7? Yes
+Contains 20? No
+\end{lstlisting}
+
+删除节点 7 后，树的状态为：
+
+\begin{lstlisting}[language=C++]
+Tree after removing 7:
+3
+5
+10
+12
+15
+18
+\end{lstlisting}
+
+删除节点 10 后，树的状态为：
+
+\begin{lstlisting}[language=C++]
+Tree after removing 10:
+3
+5
+12
+15
+18
+\end{lstlisting}
+
+清空树后的状态为：
+
+\begin{lstlisting}[language=C++]
+Tree after making empty:
+Empty tree
+Is tree empty? Yes
+\end{lstlisting}
+
+拷贝构造和赋值操作的结果如下：
+
+\begin{lstlisting}[language=C++]
+Copied Tree (bst3):
+1
+2
+3
+Assigned Tree (bst4):
+1
+2
+3
+Moved Tree (bst5):
+1
+2
+3
+Move Assigned Tree (bst6):
+1
+2
+3
+\end{lstlisting}
+
+\section{性能评估}
+我们进行了性能测试，比较了旧的 \texttt{old\_remove} 和新的 \texttt{remove} 函数在处理 10,000,000 个元素时的性能。测试结果如下：
+
+\begin{itemize}
+    \item 旧的删除时间：1.59195 秒
+    \item 旧的 CPU 时间：1.592 秒
+    \item 新的删除时间：1.57231 秒
+    \item 新的 CPU 时间：1.573 秒
+\end{itemize}
+
+可以看到，尽管两者的性能相似，但新实现的时间略有优势。
+
+\section{结论}
+优化后的删除函数在性能上表现良好，能够有效处理大规模数据。未来可以继续探讨更高级的优化技术，以进一步提高数据结构的性能。
+
+\end{document}
