@@ -1,0 +1,140 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{geometry}
+\geometry{left=2cm,right=2cm,top=2.5cm,bottom=2.5cm}
+
+\title{项目作业：四则混合运算器设计报告}
+\author{王珩宁 3230104148}
+\date{2024/11/10}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\newpage
+
+\section{项目简介}
+我们这个项目实现了一个基于 C++ 的四则运算表达式求值程序，支持中缀表达式的计算，包括加法、减法、乘法、除法和括号的多层嵌套。此外，程序支持输入合法性检测并输出结果，非法输入返回 \texttt{ILLEGAL}。
+
+---
+
+\section{设计思路}
+\subsection{总体框架}
+程序的核心由以下模块构成：
+\begin{itemize}
+    \item \textbf{表达式解析}：将输入表达式逐字符解析为操作数和操作符。
+    \item \textbf{运算模块}：通过栈结构计算表达式的值，支持操作符优先级。
+    \item \textbf{合法性检测模块}：确保输入表达式的格式正确，包括括号匹配、科学计数法支持、操作符的合理性等。
+    \item \textbf{交互模块}：支持用户输入表达式和运行测试集。
+\end{itemize}
+处理数字和运算符：
+\begin{itemize}
+    \item \texttt{isValidNumber} 函数用于验证数字的格式是否有效，确保数字中只有一个小数点和一个科学计数法标志。
+    \item \texttt{processNumber} 函数用于从表达式中提取数字，并将其转换为 \texttt{double} 类型后存入 \texttt{values} 栈中。
+    \item \texttt{processOperator} 函数用于处理运算符，根据运算符的优先级进行计算，并将结果存入 \texttt{values} 栈中。
+\end{itemize}
+
+处理括号：
+\begin{itemize}
+    \item \texttt{isMatchingParenthesis} 函数用于检查括号是否匹配。
+    \item \texttt{processLeftParenthesis} 函数处理左括号，将其压入 \texttt{ops} 栈中。
+    \item \texttt{processRightParenthesis} 函数处理右括号，执行相应的计算直到匹配的左括号，然后将左括号弹出。
+\end{itemize}
+
+解析表达式：
+\begin{itemize}
+    \item \texttt{parseExpression} 函数是整个表达式计算的核心，它遍历表达式并根据数字、运算符和括号的不同情况调用相应的处理函数。
+    \item 在解析表达式时，会处理空格、数字、括号和运算符，并根据情况调整 \texttt{expectOperator} 和 \texttt{isNegative} 标志位。
+\end{itemize}
+
+执行计算：
+\begin{itemize}
+    \item \texttt{compute} 函数执行实际的计算操作，根据栈顶两个操作数和当前运算符进行计算，并将结果存回 \texttt{values} 栈中。
+    \item \texttt{computeResult} 函数循环执行计算，直到所有运算符都被处理完毕，最终将结果存入 \texttt{result} 中。
+\end{itemize}
+
+清空操作数栈和操作符栈：
+\begin{itemize}
+    \item \texttt{clear} 函数用于清空 \texttt{values} 和 \texttt{ops} 栈，以便下一次表达式计算。
+\end{itemize}
+
+\subsection{运算模块}
+伪代码如下
+\begin{lstlisting}[language=C++, basicstyle=\ttfamily\small, frame=single]
+    函数 parseExpression(字符串 expression):
+    初始化 expectOperator = isNegative = F
+    遍历字符串:
+        如果是空格:
+            跳过
+        如果是数字或小数点:
+            调用 processNumber 对数字进行tokenize
+            如果失败:
+                报错
+            设置 expectOperator = T
+        如果是左括号:
+            调用直接入栈
+        如果是右括号:
+            调用一直出栈直到遇到左括号
+            如果失败:
+                报错
+            设置 expectOperator = T
+        如果是运算符:
+            调用 processOperator
+            如果失败:
+                报错
+        否则:
+            报错 
+    返回 T
+\end{lstlisting}
+---
+
+\section{测试结果分析}
+\subsection{测试方法}
+通过文件 \texttt{test\_cases.txt} 我提供了足量多测试用例，覆盖了边界条件，基本运算，可行性和各类边界条件等。程序将运行并验证计算结果是否正确。以下为部分测试用例。
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        测试用例 & 期望结果 & 实际结果 \\
+        \hline
+        \texttt{3+5} & \texttt{8} & \texttt{8} \\
+        \texttt{(2+3)*4} & \texttt{20} & \texttt{20} \\
+        \texttt{1e2+3} & \texttt{103} & \texttt{103} \\
+        \texttt{(3} & \texttt{ILLEGAL} & \texttt{ILLEGAL} \\
+        \texttt{2+*3} & \texttt{ILLEGAL} & \texttt{ILLEGAL} \\
+        \hline
+    \end{tabular}
+    \caption{部分测试结果}
+    \label{tab:testResults}
+\end{table}
+
+\subsection{测试覆盖情况}
+\begin{itemize}
+    \item 支持的表达式类型：四则运算、括号嵌套运算、科学计数法、小数、负数。
+    \item 非法表达式检测：括号不匹配、连续操作符、不合法数字格式。
+\end{itemize}
+
+---
+
+\section{不足和疑点}
+\begin{itemize}
+    \item 无法处理超长的数，思路上，应该可以通过把浮点数变成三个可拓展的vector<int>来解决，但是我在试图实现除法的时候发现太难了就搁置了
+    \item 1e300*1e-300这种情况下会返回false，但是按理来说应该计算出1，可能是double的习性比较奇怪，但是我暂时没有找到解决办法
+    \item 当前实现未对极端情况（如超长表达式）进行性能优化。
+    \item 在测试用例时，检验答案在字符串意义上的正确性，和在数学意义上的正确性各有优缺点，这里只用了前者，后者可能对无穷有理数的检查更准确
+    \item 同样的，1.计算机输入的小数一定有限，所以一定有理数，2.只有+-*/没有根号。可得计算机的结果一定是有理数，或许可以想办法用整数比来表示，更精确。但是加减乘除法会变成分式运算。
+    恳请助教老师指点和建议，
+\end{itemize}
+
+
+---
+
+\end{document}
