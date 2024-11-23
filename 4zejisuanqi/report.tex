@@ -5,6 +5,7 @@
 \usepackage{hyperref}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{ctex} % 支持中文
 \usepackage{geometry}
 \geometry{left=2cm,right=2cm,top=2.5cm,bottom=2.5cm}
 
@@ -16,14 +17,10 @@
 
 \maketitle
 
-\tableofcontents
-
-\newpage
-
 \section{项目简介}
 我们这个项目实现了一个基于 C++ 的四则运算表达式求值程序，支持中缀表达式的计算，包括加法、减法、乘法、除法和括号的多层嵌套。此外，程序支持输入合法性检测并输出结果，非法输入返回 \texttt{ILLEGAL}。
 
----
+
 
 \section{设计思路}
 \subsection{总体框架}
@@ -93,7 +90,7 @@
             报错 
     返回 T
 \end{lstlisting}
----
+
 
 \section{测试结果分析}
 \subsection{测试方法}
@@ -101,18 +98,24 @@
 
 \begin{table}[h!]
     \centering
-    \begin{tabular}{|c|c|c|}
+    \begin{tabular}{|c|c|c|c|}
         \hline
-        测试用例 & 期望结果 & 实际结果 \\
+        \textbf{测试编号} & \textbf{测试用例} & \textbf{期望结果} & \textbf{实际结果} \\
         \hline
-        \texttt{3+5} & \texttt{8} & \texttt{8} \\
-        \texttt{(2+3)*4} & \texttt{20} & \texttt{20} \\
-        \texttt{1e2+3} & \texttt{103} & \texttt{103} \\
-        \texttt{(3} & \texttt{ILLEGAL} & \texttt{ILLEGAL} \\
-        \texttt{2+*3} & \texttt{ILLEGAL} & \texttt{ILLEGAL} \\
+        1 & \texttt{3+5} & \texttt{8} & \texttt{8} \\
+        2 & \texttt{(2+3)*4} & \texttt{20} & \texttt{20} \\
+        3 & \texttt{1e2+3} & \texttt{103} & \texttt{103} \\
+        4 & \texttt{(3} & \texttt{ILLEGAL} & \texttt{ILLEGAL} \\
+        5 & \texttt{2+*3} & \texttt{ILLEGAL} & \texttt{ILLEGAL} \\
+        6 & \texttt{1/0} & \texttt{ILLEGAL} & \texttt{ILLEGAL} \\
+        7 & \texttt{5.2e1+3.4} & \texttt{55.4} & \texttt{55.4} \\
+        8 & \texttt{-2.5e-2+4.1} & \texttt{4.075} & \texttt{4.075} \\
+        9 & \texttt{(1+2)*(3-4)} & \texttt{-3} & \texttt{-3} \\
+        10 & \texttt{3++4} & \texttt{ILLEGAL} & \texttt{ILLEGAL} \\
+        11 & \texttt{3--4} & \texttt{7} & \texttt{7} \\
         \hline
     \end{tabular}
-    \caption{部分测试结果}
+    \caption{部分测试用例及其结果分析}
     \label{tab:testResults}
 \end{table}
 
@@ -122,19 +125,18 @@
     \item 非法表达式检测：括号不匹配、连续操作符、不合法数字格式。
 \end{itemize}
 
----
+
 
 \section{不足和疑点}
 \begin{itemize}
-    \item 无法处理超长的数，思路上，应该可以通过把浮点数变成三个可拓展的vector<int>来解决，但是我在试图实现除法的时候发现太难了就搁置了
-    \item 1e300*1e-300这种情况下会返回false，但是按理来说应该计算出1，可能是double的习性比较奇怪，但是我暂时没有找到解决办法
-    \item 当前实现未对极端情况（如超长表达式）进行性能优化。
+    \item 1e308*1e-308这种情况下会返回false，但是按理来说应该能做到计算出1，可能是double的性质比较奇怪，但是我暂时没有找到解决办法
+    \item 当前实现未对极端情况（如超长表达式）进行性能优化。本程序为了全面的报错和非法处理，在效率上有所让步。
     \item 在测试用例时，检验答案在字符串意义上的正确性，和在数学意义上的正确性各有优缺点，这里只用了前者，后者可能对无穷有理数的检查更准确
-    \item 同样的，1.计算机输入的小数一定有限，所以一定有理数，2.只有+-*/没有根号。可得计算机的结果一定是有理数，或许可以想办法用整数比来表示，更精确。但是加减乘除法会变成分式运算。
-    恳请助教老师指点和建议，
+    \item 无法处理超长的数，思路上，应该可以通过把浮点数变成三个可拓展的vector<int>来解决，但是我在试图实现除法的时候发现太难了就搁置了。由1.计算机输入的小数一定有限，所以一定有理数，2.只有+-*/没有根号。可得计算机的结果一定是有理数，或许可以想办法用整数(vector<short>，一个数组表示一条整数)之商来表示，更精确。但是加减乘除法会变成分式运算。但是能解决double的量程问题，且不会发生浮点数导致的underflow和overflow。
+    恳请助教老师指点和建议。
 \end{itemize}
 
 
----
+
 
 \end{document}

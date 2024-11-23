@@ -13,8 +13,9 @@
   
 ## 使用方法
   
-在当前文件夹下运行 make 或 make report 然后再 make clean 即可，    
-注意请不要用某些IDE编译，如果文件夹结构变成(... , output(main.exe))  
+make:编译并运行main.cpp  
+make report:编译生成report.pdf  
+注意烦请不要用某些IDE编译，如果文件夹结构变成(... , output(main.exe))  
 的结构，会导致程序读取test_cases.txt时fail    
 运行可执行程序后输入help可获得进一步的介绍，也可以就直接输进去算。     
      

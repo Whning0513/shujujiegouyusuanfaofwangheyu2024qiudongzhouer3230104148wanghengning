@@ -1,155 +1,142 @@
-/*whn 3230104148 2024DS 11.21*/
 #include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
 #include <sstream>
-#include <cmath> // 包含数学操作，例如四舍五入
-#include "expression_evaluator.h" // 表达式求值器的头文件
+#include <cmath>
+#include "expression_evaluator.h"
 
-// 帮助函数：将浮点数四舍五入到指定的小数位数
+// 帮助函数：四舍五入到指定的小数位
 double roundToPrecision(double value, int precision) {
-    double factor = std::pow(10.0, precision); // 10 的 `precision` 次方，用于放大数字
-    return std::round(value * factor) / factor; // 四舍五入并还原到原始范围
+    double factor = std::pow(10.0, precision);
+    return std::round(value * factor) / factor;
 }
 
 // 从文件加载测试用例
 std::vector<std::pair<std::string, std::string>> loadTestCasesFromFile(const std::string& filename) {
-    std::vector<std::pair<std::string, std::string>> testExpressions; // 用于存储测试用例
-    std::ifstream file(filename); // 打开指定文件
-    if (!file.is_open()) {
-        std::cerr << "Failed to open file: " << filename << "\n"; // 文件打开失败时输出错误
+    std::vector<std::pair<std::string, std::string>> testExpressions;
+    std::ifstream file(filename);
+    if (!file) {
+        std::cerr << "Error: Unable to open file: " << filename << "\n";
         return testExpressions;
     }
 
     std::string line;
-    while (std::getline(file, line)) { // 逐行读取文件内容
-        std::istringstream ss(line); // 使用字符串流处理当前行
+    while (std::getline(file, line)) {
+        std::istringstream ss(line);
         std::string expression, expected;
-
-        // 解析行内容，表达式与期望结果通过 | 分隔
         if (std::getline(ss, expression, '|') && std::getline(ss, expected)) {
-            testExpressions.emplace_back(expression, expected); // 添加有效测试用例
+            testExpressions.emplace_back(expression, expected);
         } else {
-            std::cerr << "Invalid line format: " << line << "\n"; // 格式无效时输出警告
+            std::cerr << "Warning: Skipping invalid line: " << line << "\n";
         }
     }
-
-    file.close(); // 关闭文件
     return testExpressions;
 }
 
 // 显示帮助信息
 void showHelp() {
-std::cout << "\n== HELP MENU ==\n";
-std::cout << "- Enter a valid mathematical expression to calculate.\n";
-std::cout << "Example: 4+11*(1e-1+10-(-1*111--11/222)+(111-11)) \n";
-std::cout << "- Enter 'ptc' to run all test cases from the 'test_cases.txt' file.\n";
-std::cout << "- Enter 'help' to display this help menu.\n";
-std::cout << "- Enter 'exit' to exit the program.\n";
-std::cout << "For more detailed instructions, please refer to the readme.md file.\n\n";
+    std::cout << "\n== HELP MENU ==\n"
+              << "- Enter a valid mathematical expression to evaluate.\n"
+              << "- Commands:\n"
+              << "  'ptc': Run all test cases from 'test_cases.txt'.\n"
+              << "  'help': Display this help menu.\n"
+              << "  'exit': Exit the program.\n\n";
 }
 
-// 运行测试用例并验证结果
 void runTests(const std::vector<std::pair<std::string, std::string>>& testExpressions) {
     ExpressionEvaluator evaluator; // 初始化表达式求值器
-    int faults_num = 0; // 错误计数器
-    int case_num = 1; // 用例编号
+    int faults = 0;                // 错误计数
+    int caseNum = 1;               // 测试用例编号
 
-    std::cout << "\nRunning test cases...\n";
+    std::cout << "\n== Running Test Cases ==\n";
+
     for (const auto& [expression, expected] : testExpressions) {
-        double result;
-        std::cout << "Case " << case_num++ << ": " 
-                  << (expression.empty() ? "(empty expression)" : expression) << "\n";
+        std::string trimmedExpression = expression;
+        std::string trimmedExpected = expected;
 
-        // 尝试评估表达式
-        if (evaluator.evaluate(expression, result)) {
-            std::cout << "Result:    " << result << "\n";
-            std::cout << "Expected:  " << expected << "\n";
+        // 去除前后空格
+        trimmedExpression.erase(0, trimmedExpression.find_first_not_of(" \t\r\n"));
+        trimmedExpression.erase(trimmedExpression.find_last_not_of(" \t\r\n") + 1);
+        trimmedExpected.erase(0, trimmedExpected.find_first_not_of(" \t\r\n"));
+        trimmedExpected.erase(trimmedExpected.find_last_not_of(" \t\r\n") + 1);
 
-            // 如果期望结果是小数，检查精度
-            if (!expected.empty() && expected.find('.') != std::string::npos) {
-                size_t decimalPos = expected.find('.'); // 找到小数点位置
-                int precision = expected.size() - decimalPos - 1; // 小数位数
-                double roundedResult = roundToPrecision(result, precision); // 四舍五入结果
-                double expectedValue = std::stod(expected); // 转换期望结果
+        double result; // 存储评估结果
+        bool evaluationSuccess = evaluator.evaluate(trimmedExpression, result);
+        bool isExpectedIllegal = (trimmedExpected == "ILLEGAL");
+
+        std::cout << "Case " << caseNum++ << ": \"" << trimmedExpression << "\"\n";
+
+        // 逻辑：计算失败，且预期为非法
+        if (!evaluationSuccess && isExpectedIllegal) {
+            std::cout << "Result: ILLEGAL (Passed)\n";
+        } 
+        // 逻辑：计算失败，且预期不是非法
+        else if (!evaluationSuccess) {
+            ++faults;
+            std::cout << "Result: ILLEGAL (Failed, expected: " << trimmedExpected << ")\n";
+        } 
+        // 逻辑：计算成功，比较结果
+        else {
+            try {
+                double expectedValue = std::stod(trimmedExpected);  // 将期望值转换为浮点数
+                double roundedResult = roundToPrecision(result, 9); // 四舍五入统一精度
 
                 if (std::fabs(roundedResult - expectedValue) < 1e-9) {
-                    std::cout << "Test Passed!\n"; // 结果匹配
+                    std::cout << "Result: " << result << " (Passed)\n";
                 } else {
-                    faults_num++;
-                    std::cout << "Test Failed! ***************************************************\n";
+                    ++faults;
+                    std::cout << "Result: " << result << " (Failed, expected: " << trimmedExpected << ")\n";
                 }
-            } else {
-                // 对于整数或非小数格式，直接字符串比较
-                if (std::to_string(result).substr(0, expected.size()) == expected) {
-                    std::cout << "Test Passed!\n";
-                } else {
-                    faults_num++;
-                    std::cout << "Test Failed! ***************************************************\n";
-                }
-            }
-        } else {
-            std::cout << "Invalid: Invalid expression!\n";
-            std::cout << "Expected: " << expected << "\n";
-            if (expected == "ILLEGAL") {
-                std::cout << "Test Passed!\n"; // 非法表达式的正确结果
-            } else {
-                faults_num++;
-                std::cout << "Test Failed! Unexpected error. ************************\n";
+            } catch (const std::exception& e) {
+                // 如果期望值不是数字
+                ++faults;
+                std::cout << "Result: " << result << " (Failed, invalid expected format)\n";
             }
         }
 
         std::cout << "-------------------------------\n";
     }
-    std::cout << "Test cases completed.\n" << faults_num << " faults found.\n"; // 总结测试结果
+    std::cout << "Test cases completed with " << faults << " faults.\n";
 }
 
-// 交互模式：用户输入表达式进行求值
+
+// 交互模式
 void interactiveMode() {
-    ExpressionEvaluator evaluator; // 初始化表达式求值器
+    ExpressionEvaluator evaluator;
     std::string input;
 
-    std::cout << "\n== EVALUATOR ==\n\n";
-    std::cout << "this is a evaluator\n";
-    std::cout << "Enter a mathematical expression to calculate, and enter 'exit' to exit or 'help' to view help.\n";
+    std::cout << "Welcome to the Expression Evaluator!\n"
+              << "Enter 'help' for instructions or 'exit' to quit.\n";
 
     while (true) {
-        std::cout << ">> "; // 提示符
-        std::getline(std::cin, input); // 获取用户输入
+        std::cout << ">> ";
+        std::getline(std::cin, input);
 
-        if (input == "exit") { // 退出命令
-            std::cout << ">_< bye!\n";
+        if (input == "exit") {
+            std::cout << "Goodbye!\n";
             break;
-        }
-
-        if (input == "help") { // 显示帮助菜单
+        } else if (input == "help") {
             showHelp();
-            continue;
-        }
-
-        if (input == "ptc") { // 运行测试用例
-            std::vector<std::pair<std::string, std::string>> testExpressions = loadTestCasesFromFile("test_cases.txt");
-            if (!testExpressions.empty()) {
-                runTests(testExpressions);
+        } else if (input == "ptc") {
+            auto testCases = loadTestCasesFromFile("test_cases.txt");
+            if (!testCases.empty()) {
+                runTests(testCases);
             } else {
-                std::cout << "No valid test cases found in 'test_cases.txt'.\n";
+                std::cout << "No valid test cases found.\n";
             }
-            continue;
-        }
-
-        // 评估用户输入的表达式
-        double result;
-        if (evaluator.evaluate(input, result)) {
-            std::cout << "Result: " << result << "\n"; // 输出计算结果
         } else {
-            std::cout << "ILLEGAL\n"; // 非法表达式
+            double result;
+            if (evaluator.evaluate(input, result)) {
+                std::cout << "Result: " << result << "\n";
+            } else {
+                std::cout << "ILLEGAL.\n";
+            }
         }
     }
 }
 
-// 程序入口
 int main() {
-    interactiveMode(); // 进入交互模式
-    return 0; // 正常退出程序
+    interactiveMode();
+    return 0;
 }
