@@ -6,7 +6,7 @@
 .  
 ├── expression_evaluator.h    # 表达式求值的核心实现  
 ├── main.cpp                  # 程序入口，处理交互和测试用例  
-├── test_cases.txt            # 测试用例文件,格式expression|result为一行
+├── test_cases.txt            # 测试用例文件,格式expression|result为一行  
 ├── Makefile                  # 自动化编译脚本  
 └── readme.md               
 └── report.tex                # 文档报告的源代码    
