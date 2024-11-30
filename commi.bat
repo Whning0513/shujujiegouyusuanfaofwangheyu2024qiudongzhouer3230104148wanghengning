@@ -1,7 +1,7 @@
-color 12
+color 10
 git pull origin main
 git add .
 git commit -m "sddl"
 git push origin main
-color 21
+color 20
 pause
