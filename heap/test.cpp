@@ -85,12 +85,6 @@ void testSort(const string& type, int& successCount, vector<string>& results) {
     vector<int> seq = generateSequence(n, type);
     vector<int> seq_copy = seq; // 用于 std::sort_heap
 
-    // 打印堆（仅当n <= 10时）
-    if (n <= 100 && type == "random") {
-        cout << "After std::sort_heap: ";
-        printHeap(seq);
-    }
-
     // ******  测试自定义堆排序  ******
     auto start1 = high_resolution_clock::now();
     heapSort(seq);
@@ -99,18 +93,6 @@ void testSort(const string& type, int& successCount, vector<string>& results) {
 
     bool customSuccess = check(seq);  // 检查自定义堆排序是否成功
     //printf(customSuccess ? "1" : "0");
-
-    // 打印堆（仅当n <= 10时）
-    if (n <= 100 && type == "random") {
-        cout << "After std::sort_heap: ";
-        printHeap(seq);
-    }
-
-    // 打印堆（仅当n <= 10时）
-    if (n <= 100 && type == "random") {
-        cout << "After std::sort_heap: ";
-        printHeap(seq_copy);
-    }
 
     // ******  测试 std::sort_heap  ******
     std::make_heap(seq_copy.begin(), seq_copy.end()); // 使用最大堆
@@ -121,12 +103,6 @@ void testSort(const string& type, int& successCount, vector<string>& results) {
 
     bool stdSuccess = check(seq_copy);  // 检查 std::sort_heap 是否成功
     //printf(stdSuccess ? "1" : "0");
-
-    // 打印堆（仅当n <= 10时）
-    if (n <= 100 && type == "random") {
-        cout << "After std::sort_heap: ";
-        printHeap(seq_copy);
-    }
 
     // 如果排序成功，则计数增加
     if (customSuccess) successCount++;
