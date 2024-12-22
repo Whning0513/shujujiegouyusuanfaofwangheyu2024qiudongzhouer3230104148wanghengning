@@ -2,25 +2,27 @@
 ## 简介
 这是一个基于 C++ 的四则运算表达式求值程序，支持中缀表达式的合法性检查和计算。程序能够处理包含加法、减法、乘法、除法、括号和科学计数法的表达式，对于非法输入，会返回 ILLEGAL。  
   
-## file结构
-.  
-├── expression_evaluator.h    # 表达式求值的核心实现  
-├── main.cpp                  # 程序入口，处理交互和测试用例  
-├── test_cases.txt            # 测试用例文件,格式expression|result为一行  
-<<<<<<< HEAD
-├── Makefile                  # 自动化编译脚本  
-=======
-├── Makefile                  # 自动化编译脚本    
->>>>>>> 48e46bffdc79f7398bbe5ed9f213df99ec4e2bb5
-└── readme.md               
-└── report.tex                # 文档报告的源代码    
+## 目录结构
+
+以下是项目的目录结构：
+
+<pre>
+*
+├── expression_evaluator.h    # 表达式求值的核心实现
+├── main.cpp                  # 程序入口，处理交互和测试用例
+├── test_cases.txt            # 测试用例文件, 格式 expression|result
+├── Makefile                  # 自动化编译脚本
+└── readme.md                 # 项目的基本介绍和使用说明
+└── report.tex                # 文档报告的源代码
+</pre>
+
   
 ## 使用方法
   
 make:编译并运行main.cpp  
-make report:编译生成report.pdf  
-注意烦请不要用某些IDE编译，如果文件夹结构变成(... , output(main.exe))  
-的结构，会导致程序读取test_cases.txt时fail    
+make report:编译生成report.pdf    
+  
+注意烦请不要用某些IDE编译，如果文件夹结构变成(... , output(main.exe))的结构，会导致程序读取test_cases.txt时fail    
 运行可执行程序后输入help可获得进一步的介绍，也可以就直接输进去算。     
      
 示例：  

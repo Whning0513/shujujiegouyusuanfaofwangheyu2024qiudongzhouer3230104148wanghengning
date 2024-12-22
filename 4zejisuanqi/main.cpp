@@ -1,3 +1,4 @@
+/*whn 3230104148 2024DS 11.21*/
 #include <iostream>
 #include <string>
 #include <vector>
@@ -74,7 +75,7 @@ void runTests(const std::vector<std::pair<std::string, std::string>>& testExpres
         // 逻辑：计算失败，且预期不是非法
         else if (!evaluationSuccess) {
             ++faults;
-            std::cout << "Result: ILLEGAL (Failed, expected: " << trimmedExpected << ")\n";
+            std::cout << "Result: ILLEGAL (Failed, expected: " << trimmedExpected << ")   !!! \n";
         } 
         // 逻辑：计算成功，比较结果
         else {
@@ -107,7 +108,7 @@ void interactiveMode() {
     std::string input;
 
     std::cout << "Welcome to the Expression Evaluator!\n"
-              << "Enter 'help' for instructions or 'exit' to quit.\n";
+              << "Enter 'help' for instructions, 'ptc' for prepared testcases or 'exit' to exit.\n";
 
     while (true) {
         std::cout << ">> ";
